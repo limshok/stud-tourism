@@ -21,4 +21,6 @@ public class MainContext : IdentityDbContext<MainUser,CustomRole,Guid>
     public DbSet<LodgingRoomModel> LodgingRooms{ get; set; }
     public DbSet<ImageModel> Images{ get; set; }
     public DbSet<DocumentModel> Documents{ get; set; }
+    public DbSet<NewsModel> News{ get; set; }
+    public DbSet<HashtagModel> Hashtags{ get; set; }
 }

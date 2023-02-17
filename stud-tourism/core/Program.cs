@@ -10,8 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<MainContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+
 builder.Services
-    .AddDbContext<MainContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")))
     .AddIdentity<MainUser, CustomRole>(
         config =>
         {
@@ -47,13 +49,16 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+);
 
 app.UseAuthentication();
 app.UseAuthorization();

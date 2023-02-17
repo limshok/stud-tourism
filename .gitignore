@@ -1,2 +1,5 @@
 ﻿.idea
 stud-tourism/core/obj
+stud-tourism/core/bin
+stud-tourism/core/appsettings.json
+stud-tourism/core/appsettings.Development.json

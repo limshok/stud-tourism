@@ -37,7 +37,9 @@ public class AuthorizationController : Controller
         {
             UserName = username,
             FirstName = firstName,
-            LastName = lastName
+            LastName = lastName,
+            Email = email,
+            Score = 10
         };
         await _signInManager.UserManager.CreateAsync(user, pass);
         await _signInManager.UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Student"));

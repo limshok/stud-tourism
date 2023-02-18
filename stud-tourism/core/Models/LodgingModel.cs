@@ -20,6 +20,6 @@ public class LodgingModel
     public List<DocumentModel>? Documents { get; set; }
     public List<ServiceModel>? Services { get; set; }
     public List<LodgingRoomModel>? Rooms { get; set; }
-    
-    
+
+    public List<MainUser> Booked { get; set; }
 }

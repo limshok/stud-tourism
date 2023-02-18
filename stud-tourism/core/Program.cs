@@ -47,6 +47,7 @@ builder.Services.AddAuthorization(options =>
         {
             builder.RequireClaim("Role", "Student");
         });
+        
     }
     );
 
@@ -67,6 +68,7 @@ app.UseHttpsRedirection();
 app.UseCors(builder => builder
     .AllowAnyOrigin()
     .AllowAnyHeader()
+    .AllowAnyMethod()
 );
 
 app.UseAuthentication();

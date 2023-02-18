@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using core;
 using core.Data;
@@ -40,6 +41,14 @@ builder.Services.AddAuthentication("Bearer")
             IssuerSigningKey = key,
         };
     });
+builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("Student", builder =>
+        {
+            builder.RequireClaim("Role", "Student");
+        });
+    }
+    );
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

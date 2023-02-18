@@ -40,6 +40,7 @@ public class AuthorizationController : Controller
             LastName = lastName
         };
         await _signInManager.UserManager.CreateAsync(user, pass);
+        await _signInManager.UserManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Student"));
         return await Authorize(username, pass);
     }
 
@@ -51,7 +52,11 @@ public class AuthorizationController : Controller
         var user = await _signInManager.UserManager.FindByNameAsync(name);
         if (user == null)
         {
-            return NotFound();
+            user = await _signInManager.UserManager.FindByEmailAsync(name);
+            if (user==null)
+            {
+                return NotFound();
+            }
         }
         
         var result = await _signInManager.PasswordSignInAsync(user, pass, false, false);
@@ -67,10 +72,7 @@ public class AuthorizationController : Controller
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Issuer"],
-                new List<Claim>()
-                {
-                    new Claim(JwtRegisteredClaimNames.NameId,user.Id.ToString())
-                },
+                GetClaimsIdentity(user).Result.Claims,
                 notBefore: DateTime.Now,
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials);
@@ -81,13 +83,28 @@ public class AuthorizationController : Controller
         return BadRequest();
     }
 
-    [Authorize]
+    [Authorize(Policy = "Student")]
     [HttpGet(nameof(Try))]
-    public IActionResult Try()
+    public async Task<IActionResult> Try()
     {
-        // var id = HttpContext.User.Claims.First(c => c.Type == "Id");
+        var id = HttpContext.User.Claims.First(c => c.Type == ClaimsIdentity.DefaultNameClaimType);
+        var user = await _signInManager.UserManager.FindByNameAsync(id.Value);
+        var claimS = "";
+        foreach (var claim in HttpContext.User.Claims)
+        {
+            claimS += claim.Type + ":" + claim.Value +"\n";
+        }
+        return Ok(claimS);
+    }
 
-        return Ok("Hello");
-        // return Ok(identity.FirstName + " " + identity.LastName);
+    private async Task<ClaimsIdentity?> GetClaimsIdentity(MainUser user)
+    {
+        var claims = new List<Claim>()
+        {
+            new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+        };
+        claims.AddRange(await _signInManager.UserManager.GetClaimsAsync(user));
+        
+        return new ClaimsIdentity(claims, "Bearer", ClaimsIdentity.DefaultNameClaimType,ClaimsIdentity.DefaultRoleClaimType);
     }
 }

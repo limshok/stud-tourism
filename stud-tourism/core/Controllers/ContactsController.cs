@@ -25,7 +25,7 @@ public class ContactsController : ControllerBase
     
     // GET: api/Contacts/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<ContactModel>> GetContactItem(int id)
+    public async Task<ActionResult<ContactModel>> GetContactItem(long id)
     {
         var contactItem = await _context.Contacts.FindAsync(id);
         
@@ -49,7 +49,7 @@ public class ContactsController : ControllerBase
     // UPDATE
     // POST: api/Contacts/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutContactItem(int id, ContactModel contactItem)
+    public async Task<IActionResult> PutContactItem(long id, ContactModel contactItem)
     {
         if (id != contactItem.Id)
         {
@@ -80,7 +80,7 @@ public class ContactsController : ControllerBase
 
     // DELETE: api/Contacts/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteContactItem(int id)
+    public async Task<IActionResult> DeleteContactItem(long id)
     {
         var contactItem = await _context.Contacts.FindAsync(id);
         if (contactItem == null)
@@ -94,7 +94,7 @@ public class ContactsController : ControllerBase
         return NoContent();
     }
 
-    private bool ContactItemExist(int id)
+    private bool ContactItemExist(long id)
     {
         return _context.Contacts.Any(e => e.Id == id);
     }

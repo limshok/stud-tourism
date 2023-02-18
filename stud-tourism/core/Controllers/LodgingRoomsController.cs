@@ -20,16 +20,22 @@ public class LodgingRoomsController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LodgingRoomModel>>> GetAllLodgingRooms()
     {
-        return await _context.LodgingRooms.ToListAsync();
+        return await _context.LodgingRooms
+            .Include(p => p.Images)
+            .AsSplitQuery()
+            .ToListAsync();
     }
     
     // GET: api/LodgingRooms/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<LodgingRoomModel>> GetLodgingRoomItem(int id)
+    public async Task<ActionResult<LodgingRoomModel>> GetLodgingRoomItem(long id)
     {
-        var lodgingRoomItem = await _context.LodgingRooms.FindAsync(id);
+        var lodgingRoomItem = await _context.LodgingRooms
+            .Include(p => p.Images)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
         
-        if (lodgingRoomItem == null)
+        if (lodgingRoomItem == default)
             return NotFound();
 
         return lodgingRoomItem;
@@ -49,7 +55,7 @@ public class LodgingRoomsController : Controller
     // UPDATE
     // POST: api/LodgingRooms/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutLodgingRoomItem(int id, LodgingRoomModel lodgingRoomItem)
+    public async Task<IActionResult> PutLodgingRoomItem(long id, LodgingRoomModel lodgingRoomItem)
     {
         if (id != lodgingRoomItem.Id)
         {
@@ -80,7 +86,7 @@ public class LodgingRoomsController : Controller
     
     // DELETE: api/LodgingRooms/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteLodgingRoomItem(int id)
+    public async Task<IActionResult> DeleteLodgingRoomItem(long id)
     {
         var lodgingRoomItem = await _context.LodgingRooms.FindAsync(id);
         if (lodgingRoomItem == null)
@@ -94,7 +100,7 @@ public class LodgingRoomsController : Controller
         return NoContent();
     }
     
-    private bool LodgingRoomItemExist(int id)
+    private bool LodgingRoomItemExist(long id)
     {
         return _context.LodgingRooms.Any(e => e.Id == id);
     }

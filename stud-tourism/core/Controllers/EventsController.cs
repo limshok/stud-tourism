@@ -20,16 +20,24 @@ public class EventsController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EventModel>>> GetAllEvents()
     {
-        return await _context.Events.ToListAsync();
+        return await _context.Events
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .AsSplitQuery()
+            .ToListAsync();
     }
 
     // GET: api/Events/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<EventModel>> GetEventItem(int id)
+    public async Task<ActionResult<EventModel>> GetEventItem(long id)
     {
-        var eventItem = await _context.Events.FindAsync(id);
+        var eventItem = await _context.Events
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (eventItem == null)
+        if (eventItem == default)
             return NotFound();
 
         return eventItem;
@@ -49,7 +57,7 @@ public class EventsController : Controller
     // UPDATE
     // POST: api/Events/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutEventItem(int id, EventModel eventItem)
+    public async Task<IActionResult> PutEventItem(long id, EventModel eventItem)
     {
         if (id != eventItem.Id)
         {
@@ -80,7 +88,7 @@ public class EventsController : Controller
 
     // DELETE: api/Events/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteEventItem(int id)
+    public async Task<IActionResult> DeleteEventItem(long id)
     {
         var eventItem = await _context.Events.FindAsync(id);
         if (eventItem == null)
@@ -94,7 +102,7 @@ public class EventsController : Controller
         return NoContent();
     }
 
-    private bool EventItemExist(int id)
+    private bool EventItemExist(long id)
     {
         return _context.Events.Any(e => e.Id == id);
     }

@@ -25,7 +25,7 @@ public class UniversitiesController : Controller
     
     // GET: api/Universities/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<UniversityModel>> GetUniversityItem(int id)
+    public async Task<ActionResult<UniversityModel>> GetUniversityItem(long id)
     {
         var universityItem = await _context.Universities.FindAsync(id);
         
@@ -49,7 +49,7 @@ public class UniversitiesController : Controller
     // UPDATE
     // POST: api/Universities/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUniversityItem(int id, UniversityModel universityItem)
+    public async Task<IActionResult> PutUniversityItem(long id, UniversityModel universityItem)
     {
         if (id != universityItem.Id)
         {
@@ -80,7 +80,7 @@ public class UniversitiesController : Controller
     
     // DELETE: api/Universities/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUniversityItem(int id)
+    public async Task<IActionResult> DeleteUniversityItem(long id)
     {
         var universityItem = await _context.Universities.FindAsync(id);
         if (universityItem == null)
@@ -94,7 +94,7 @@ public class UniversitiesController : Controller
         return NoContent();
     }
     
-    private bool UniversityItemExist(int id)
+    private bool UniversityItemExist(long id)
     {
         return _context.Universities.Any(e => e.Id == id);
     }

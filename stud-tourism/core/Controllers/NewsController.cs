@@ -20,16 +20,24 @@ public class NewsController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<NewsModel>>> GetAllNews()
     {
-        return await _context.News.ToListAsync();
+        return await _context.News
+            .Include(p => p.Images)
+            .Include(p => p.Hashtags)
+            .AsSplitQuery()
+            .ToListAsync();;
     }
 
     // GET: api/News/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<NewsModel>> GetNewsItem(int id)
+    public async Task<ActionResult<NewsModel>> GetNewsItem(long id)
     {
-        var newsItem = await _context.News.FindAsync(id);
+        var newsItem = await _context.News
+            .Include(p => p.Images)
+            .Include(p => p.Hashtags)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (newsItem == null)
+        if (newsItem == default)
             return NotFound();
 
         return newsItem;
@@ -49,7 +57,7 @@ public class NewsController : Controller
     // UPDATE
     // POST: api/News/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutNewsItem(int id, NewsModel newsItem)
+    public async Task<IActionResult> PutNewsItem(long id, NewsModel newsItem)
     {
         if (id != newsItem.Id)
         {
@@ -80,7 +88,7 @@ public class NewsController : Controller
 
     // DELETE: api/News/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteNewsItem(int id)
+    public async Task<IActionResult> DeleteNewsItem(long id)
     {
         var newsItem = await _context.News.FindAsync(id);
         if (newsItem == null)
@@ -94,7 +102,7 @@ public class NewsController : Controller
         return NoContent();
     }
 
-    private bool NewsItemExist(int id)
+    private bool NewsItemExist(long id)
     {
         return _context.News.Any(e => e.Id == id);
     }

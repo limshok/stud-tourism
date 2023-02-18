@@ -20,16 +20,32 @@ public class LodgingsController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LodgingModel>>> GetAllLodgings()
     {
-        return await _context.Lodgings.ToListAsync();
+        return await _context.Lodgings
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .Include(p => p.Contact)
+            .Include(p => p.Documents)
+            .Include(p => p.Services)
+            .Include(p => p.Rooms)
+            .AsSplitQuery()
+            .ToListAsync();
     }
     
     // GET: api/Lodgings/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<LodgingModel>> GetLodgingItem(int id)
+    public async Task<ActionResult<LodgingModel>> GetLodgingItem(long id)
     {
-        var lodgingItem = await _context.Lodgings.FindAsync(id);
+        var lodgingItem = await _context.Lodgings
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .Include(p => p.Contact)
+            .Include(p => p.Documents)
+            .Include(p => p.Services)
+            .Include(p => p.Rooms)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
         
-        if (lodgingItem == null)
+        if (lodgingItem == default)
             return NotFound();
 
         return lodgingItem;
@@ -49,7 +65,7 @@ public class LodgingsController : Controller
     // UPDATE
     // POST: api/Lodgings/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutLodgingItem(int id, LodgingModel lodgingItem)
+    public async Task<IActionResult> PutLodgingItem(long id, LodgingModel lodgingItem)
     {
         if (id != lodgingItem.Id)
         {
@@ -80,7 +96,7 @@ public class LodgingsController : Controller
     
     // DELETE: api/Lodgings/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteLodgingItem(int id)
+    public async Task<IActionResult> DeleteLodgingItem(long id)
     {
         var lodgingItem = await _context.Lodgings.FindAsync(id);
         if (lodgingItem == null)
@@ -94,7 +110,7 @@ public class LodgingsController : Controller
         return NoContent();
     }
     
-    private bool LodgingItemExist(int id)
+    private bool LodgingItemExist(long id)
     {
         return _context.Lodgings.Any(e => e.Id == id);
     }

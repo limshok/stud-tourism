@@ -26,7 +26,7 @@ public class ImagesController : Controller
     
     // GET: api/Images/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<ImageModel>> GetImageItem(int id)
+    public async Task<ActionResult<ImageModel>> GetImageItem(long id)
     {
         var imageItem = await _context.Images.FindAsync(id);
         
@@ -50,7 +50,7 @@ public class ImagesController : Controller
     // UPDATE
     // POST: api/Images/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutImageItem(int id, ImageModel imageItem)
+    public async Task<IActionResult> PutImageItem(long id, ImageModel imageItem)
     {
         if (id != imageItem.Id)
         {
@@ -81,7 +81,7 @@ public class ImagesController : Controller
     
     // DELETE: api/Images/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteImageItem(int id)
+    public async Task<IActionResult> DeleteImageItem(long id)
     {
         var imageItem = await _context.Images.FindAsync(id);
         if (imageItem == null)
@@ -95,7 +95,7 @@ public class ImagesController : Controller
         return NoContent();
     }
     
-    private bool ImageItemExist(int id)
+    private bool ImageItemExist(long id)
     {
         return _context.Images.Any(e => e.Id == id);
     }

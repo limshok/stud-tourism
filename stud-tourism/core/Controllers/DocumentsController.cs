@@ -25,7 +25,7 @@ public class DocumentsController : Controller
     
     // GET: api/Documents/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<DocumentModel>> GetDocumentItem(int id)
+    public async Task<ActionResult<DocumentModel>> GetDocumentItem(long id)
     {
         var documentItem = await _context.Documents.FindAsync(id);
         
@@ -49,7 +49,7 @@ public class DocumentsController : Controller
     // UPDATE
     // POST: api/Documents/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutDocumentItem(int id, DocumentModel documentItem)
+    public async Task<IActionResult> PutDocumentItem(long id, DocumentModel documentItem)
     {
         if (id != documentItem.Id)
         {
@@ -80,7 +80,7 @@ public class DocumentsController : Controller
 
     // DELETE: api/Documents/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteDocumentItem(int id)
+    public async Task<IActionResult> DeleteDocumentItem(long id)
     {
         var documentItem = await _context.Documents.FindAsync(id);
         if (documentItem == null)
@@ -94,7 +94,7 @@ public class DocumentsController : Controller
         return NoContent();
     }
 
-    private bool DocumentItemExist(int id)
+    private bool DocumentItemExist(long id)
     {
         return _context.Documents.Any(e => e.Id == id);
     }

@@ -20,14 +20,24 @@ public class SciencesController : Controller
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ScienceModel>>> GetAllSciences()
     {
-        return await _context.Sciences.ToListAsync();
+        return await _context.Sciences
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .Include(p => p.ContactModel)
+            .AsSplitQuery()
+            .ToListAsync();
     }
     
     // GET: api/Sciences/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<ScienceModel>> GetScienceItem(int id)
+    public async Task<ActionResult<ScienceModel>> GetScienceItem(long id)
     {
-        var scienceItem = await _context.Sciences.FindAsync(id);
+        var scienceItem = await _context.Sciences
+            .Include(p => p.Images)
+            .Include(p => p.University)
+            .Include(p => p.ContactModel)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == id);
         
         if (scienceItem == null)
             return NotFound();
@@ -49,7 +59,7 @@ public class SciencesController : Controller
     // UPDATE
     // POST: api/Sciences/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutScienceItem(int id, ScienceModel scienceItem)
+    public async Task<IActionResult> PutScienceItem(long id, ScienceModel scienceItem)
     {
         if (id != scienceItem.Id)
         {
@@ -80,7 +90,7 @@ public class SciencesController : Controller
     
     // DELETE: api/Sciences/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteScienceItem(int id)
+    public async Task<IActionResult> DeleteScienceItem(long id)
     {
         var scienceItem = await _context.Sciences.FindAsync(id);
         if (scienceItem == null)
@@ -94,7 +104,7 @@ public class SciencesController : Controller
         return NoContent();
     }
     
-    private bool ScienceItemExist(int id)
+    private bool ScienceItemExist(long id)
     {
         return _context.Sciences.Any(e => e.Id == id);
     }

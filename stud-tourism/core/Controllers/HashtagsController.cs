@@ -26,7 +26,7 @@ public class HashtagsController : Controller
     
     // GET: api/Hashtags/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<HashtagModel>> GetHashtagItem(int id)
+    public async Task<ActionResult<HashtagModel>> GetHashtagItem(long id)
     {
         var hashtagItem = await _context.Hashtags.FindAsync(id);
         
@@ -50,7 +50,7 @@ public class HashtagsController : Controller
     // UPDATE
     // POST: api/Hashtags/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutHashtagItem(int id, HashtagModel hashtagItem)
+    public async Task<IActionResult> PutHashtagItem(long id, HashtagModel hashtagItem)
     {
         if (id != hashtagItem.Id)
         {
@@ -81,7 +81,7 @@ public class HashtagsController : Controller
     
     // DELETE: api/Hashtags/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteHashtagItem(int id)
+    public async Task<IActionResult> DeleteHashtagItem(long id)
     {
         var hashtagItem = await _context.Hashtags.FindAsync(id);
         if (hashtagItem == null)
@@ -95,7 +95,7 @@ public class HashtagsController : Controller
         return NoContent();
     }
     
-    private bool HashtagItemExist(int id)
+    private bool HashtagItemExist(long id)
     {
         return _context.Hashtags.Any(e => e.Id == id);
     }

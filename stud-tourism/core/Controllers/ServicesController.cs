@@ -25,7 +25,7 @@ public class ServicesController : Controller
     
     // GET: api/Services/2
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceModel>> GetServiceItem(int id)
+    public async Task<ActionResult<ServiceModel>> GetServiceItem(long id)
     {
         var serviceItem = await _context.Services.FindAsync(id);
         
@@ -49,7 +49,7 @@ public class ServicesController : Controller
     // UPDATE
     // POST: api/Services/2
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutServiceItem(int id, ServiceModel serviceItem)
+    public async Task<IActionResult> PutServiceItem(long id, ServiceModel serviceItem)
     {
         if (id != serviceItem.Id)
         {
@@ -80,7 +80,7 @@ public class ServicesController : Controller
     
     // DELETE: api/Services/2
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteServiceItem(int id)
+    public async Task<IActionResult> DeleteServiceItem(long id)
     {
         var serviceItem = await _context.Services.FindAsync(id);
         if (serviceItem == null)
@@ -94,7 +94,7 @@ public class ServicesController : Controller
         return NoContent();
     }
     
-    private bool ServiceItemExist(int id)
+    private bool ServiceItemExist(long id)
     {
         return _context.Services.Any(e => e.Id == id);
     }

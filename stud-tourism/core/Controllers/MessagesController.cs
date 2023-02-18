@@ -19,6 +19,7 @@ public class MessagesController : Controller
         _signInManager = signInManager;
         _context = context;
     }
+    [HttpGet(nameof(GetMessages))]
     public async Task<IActionResult> GetMessages()
     {
         var id = HttpContext.User.Claims.First(c => c.Type == ClaimsIdentity.DefaultNameClaimType);

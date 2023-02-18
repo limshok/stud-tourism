@@ -1,10 +1,11 @@
 ﻿using core.Data;
 using core.Models.User;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace core.Controllers;
 
-[Route("api/{controller}")]
+[Route("api/[controller]")]
 [ApiController]
 public class AchievementController : Controller
 {
@@ -14,11 +15,13 @@ public class AchievementController : Controller
     {
         _context = context;
     }
-    [HttpGet]
+    [HttpGet(nameof(GetAll))]
     public IActionResult GetAll()
     {
         return Ok(_context.Achievements.ToList());
     }
+    
+    [HttpGet(nameof(GetLeaders))]
 
     public IActionResult GetLeaders()
     {
@@ -27,10 +30,11 @@ public class AchievementController : Controller
 
     private IEnumerable<MainUser> GetLeadersCollection()
     {
-        _context.Users.OrderBy(u => u.Score);
+        var c = _context.Users.ToList();
+        c.Sort(((a,b) => b.Score.CompareTo(a.Score) ));
         for (int i = 0; i < 10; i++)
         {
-            yield return _context.Users.ElementAt(i);
+            yield return c[i];
         }
     }
 }

@@ -12,8 +12,8 @@ using core.Data;
 namespace core.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20230218101217_init-after-revert")]
-    partial class initafterrevert
+    [Migration("20230218195801_message_sender")]
+    partial class message_sender
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,41 @@ namespace core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AchievementModelMainUser", b =>
+                {
+                    b.Property<long>("AchievementModelsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AchievementModelsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AchievementModelMainUser");
+                });
+
+            modelBuilder.Entity("core.Models.AchievementModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Achievements");
+                });
 
             modelBuilder.Entity("core.Models.ContactModel", b =>
                 {
@@ -84,7 +119,7 @@ namespace core.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FinishDate")
                         .IsRequired()
@@ -211,11 +246,11 @@ namespace core.Migrations
 
                     b.Property<string>("OrgConditions")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SoloConditions")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("UniversityId")
                         .HasColumnType("bigint");
@@ -242,7 +277,7 @@ namespace core.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("LodgingModelId")
                         .HasColumnType("bigint");
@@ -261,6 +296,27 @@ namespace core.Migrations
                     b.ToTable("LodgingRooms");
                 });
 
+            modelBuilder.Entity("core.Models.MessageModel", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"), 1L, 1);
+
+                    b.Property<string>("SenderUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("core.Models.NewsModel", b =>
                 {
                     b.Property<long>("Id")
@@ -271,7 +327,7 @@ namespace core.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -295,7 +351,7 @@ namespace core.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FoundationDate")
                         .HasColumnType("int");
@@ -333,7 +389,7 @@ namespace core.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("LodgingModelId")
                         .HasColumnType("bigint");
@@ -457,6 +513,9 @@ namespace core.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -478,6 +537,36 @@ namespace core.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("EventModelMainUser", b =>
+                {
+                    b.Property<Guid>("FollowedUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("FollowsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("FollowedUsersId", "FollowsId");
+
+                    b.HasIndex("FollowsId");
+
+                    b.ToTable("EventModelMainUser");
+                });
+
+            modelBuilder.Entity("MainUserMessageModel", b =>
+                {
+                    b.Property<Guid>("MainUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("MessagesId")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.HasKey("MainUsersId", "MessagesId");
+
+                    b.HasIndex("MessagesId");
+
+                    b.ToTable("MainUserMessageModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -583,6 +672,21 @@ namespace core.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AchievementModelMainUser", b =>
+                {
+                    b.HasOne("core.Models.AchievementModel", null)
+                        .WithMany()
+                        .HasForeignKey("AchievementModelsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("core.Models.User.MainUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("core.Models.DocumentModel", b =>
                 {
                     b.HasOne("core.Models.LodgingModel", null)
@@ -677,6 +781,36 @@ namespace core.Migrations
                     b.HasOne("core.Models.LodgingModel", null)
                         .WithMany("Services")
                         .HasForeignKey("LodgingModelId");
+                });
+
+            modelBuilder.Entity("EventModelMainUser", b =>
+                {
+                    b.HasOne("core.Models.User.MainUser", null)
+                        .WithMany()
+                        .HasForeignKey("FollowedUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("core.Models.EventModel", null)
+                        .WithMany()
+                        .HasForeignKey("FollowsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MainUserMessageModel", b =>
+                {
+                    b.HasOne("core.Models.User.MainUser", null)
+                        .WithMany()
+                        .HasForeignKey("MainUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("core.Models.MessageModel", null)
+                        .WithMany()
+                        .HasForeignKey("MessagesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

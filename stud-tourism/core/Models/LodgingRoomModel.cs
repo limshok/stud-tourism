@@ -8,7 +8,6 @@ public class LodgingRoomModel
     public string Type { get; set; }
     public int Quantity { get; set; }
     public int Cost { get; set; }
-    [Column(TypeName = "text")]
     public string Description { get; set; }
     public List<ImageModel>? Images { get; set; }
 }

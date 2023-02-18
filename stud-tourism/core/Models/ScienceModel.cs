@@ -10,7 +10,6 @@ public class ScienceModel
     public ContactModel? ContactModel { get; set; }
     public int FoundationDate { get; set; } 
     public List<ImageModel>? Images { get; set; }
-    [Column(TypeName = "text")]
     public string Description { get; set; }
     public string Url { get; set; }
 }

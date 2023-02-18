@@ -10,6 +10,20 @@ namespace core.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Achievements",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Achievements", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -30,6 +44,7 @@ namespace core.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -66,13 +81,26 @@ namespace core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "News",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,6 +140,30 @@ namespace core.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AchievementModelMainUser",
+                columns: table => new
+                {
+                    AchievementModelsId = table.Column<long>(type: "bigint", nullable: false),
+                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AchievementModelMainUser", x => new { x.AchievementModelsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_AchievementModelMainUser_Achievements_AchievementModelsId",
+                        column: x => x.AchievementModelsId,
+                        principalTable: "Achievements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AchievementModelMainUser_AspNetUsers_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -202,6 +254,30 @@ namespace core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MainUserMessageModel",
+                columns: table => new
+                {
+                    MainUsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MessagesId = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MainUserMessageModel", x => new { x.MainUsersId, x.MessagesId });
+                    table.ForeignKey(
+                        name: "FK_MainUserMessageModel_AspNetUsers_MainUsersId",
+                        column: x => x.MainUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MainUserMessageModel_Messages_MessagesId",
+                        column: x => x.MessagesId,
+                        principalTable: "Messages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Hashtags",
                 columns: table => new
                 {
@@ -229,7 +305,7 @@ namespace core.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Speciality = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cost = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FinishDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -252,8 +328,8 @@ namespace core.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SoloConditions = table.Column<string>(type: "text", nullable: false),
-                    OrgConditions = table.Column<string>(type: "text", nullable: false),
+                    SoloConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrgConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FoodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -288,7 +364,7 @@ namespace core.Migrations
                     UniversityId = table.Column<long>(type: "bigint", nullable: false),
                     ContactModelId = table.Column<long>(type: "bigint", nullable: true),
                     FoundationDate = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -303,6 +379,30 @@ namespace core.Migrations
                         name: "FK_Sciences_Universities_UniversityId",
                         column: x => x.UniversityId,
                         principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventModelMainUser",
+                columns: table => new
+                {
+                    FollowedUsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FollowsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventModelMainUser", x => new { x.FollowedUsersId, x.FollowsId });
+                    table.ForeignKey(
+                        name: "FK_EventModelMainUser_AspNetUsers_FollowedUsersId",
+                        column: x => x.FollowedUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventModelMainUser_Events_FollowsId",
+                        column: x => x.FollowsId,
+                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -335,7 +435,7 @@ namespace core.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Cost = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LodgingModelId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -355,7 +455,7 @@ namespace core.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cost = table.Column<int>(type: "int", nullable: false),
                     LodgingModelId = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -413,6 +513,11 @@ namespace core.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AchievementModelMainUser_UsersId",
+                table: "AchievementModelMainUser",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -455,6 +560,11 @@ namespace core.Migrations
                 name: "IX_Documents_LodgingModelId",
                 table: "Documents",
                 column: "LodgingModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventModelMainUser_FollowsId",
+                table: "EventModelMainUser",
+                column: "FollowsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_UniversityId",
@@ -507,6 +617,11 @@ namespace core.Migrations
                 column: "UniversityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MainUserMessageModel_MessagesId",
+                table: "MainUserMessageModel",
+                column: "MessagesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sciences_ContactModelId",
                 table: "Sciences",
                 column: "ContactModelId");
@@ -524,6 +639,9 @@ namespace core.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AchievementModelMainUser");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -543,19 +661,25 @@ namespace core.Migrations
                 name: "Documents");
 
             migrationBuilder.DropTable(
+                name: "EventModelMainUser");
+
+            migrationBuilder.DropTable(
                 name: "Hashtags");
 
             migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
+                name: "MainUserMessageModel");
+
+            migrationBuilder.DropTable(
                 name: "Services");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Achievements");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Events");
@@ -568,6 +692,12 @@ namespace core.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sciences");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Lodgings");

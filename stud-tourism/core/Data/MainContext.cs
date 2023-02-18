@@ -13,6 +13,9 @@ public class MainContext : IdentityDbContext<MainUser,CustomRole,Guid>
     }
 
     public DbSet<ContactModel> Contacts{ get; set; }
+    public DbSet<MessageModel> Messages{ get; set; }
+    
+    public DbSet<AchievementModel> Achievements{ get; set; }
     public DbSet<LodgingModel> Lodgings{ get; set; }
     public DbSet<ScienceModel> Sciences{ get; set; }
     public DbSet<ServiceModel> Services{ get; set; }

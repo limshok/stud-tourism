@@ -47,7 +47,6 @@ builder.Services.AddAuthorization(options =>
         {
             builder.RequireClaim("Role", "Student");
         });
-        
     }
     );
 

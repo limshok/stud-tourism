@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using core.Models.User;
 
 namespace core.Models;
 
@@ -6,9 +7,7 @@ public class LodgingModel
 {
     
     public long Id { get; set; }
-    [Column(TypeName = "text")]
     public string SoloConditions { get; set; }
-    [Column(TypeName = "text")]
     public string OrgConditions { get; set; }
     public string Name { get; set; }
     public string Address { get; set; }
@@ -21,4 +20,6 @@ public class LodgingModel
     public List<DocumentModel>? Documents { get; set; }
     public List<ServiceModel>? Services { get; set; }
     public List<LodgingRoomModel>? Rooms { get; set; }
+    
+    
 }

@@ -25,7 +25,7 @@ public class AuthorizationController : Controller
 
     [HttpPost]
     [Route(nameof(Register))]
-    public async Task<IActionResult> Register(string username,string firstName,string lastName, string pass)
+    public async Task<IActionResult> Register(string username,string firstName,string lastName, string pass,string email)
     {
         var user = await _signInManager.UserManager.FindByNameAsync(username);
         if (user != null)
@@ -78,7 +78,7 @@ public class AuthorizationController : Controller
                 signingCredentials);
 
             var value = new JwtSecurityTokenHandler().WriteToken(token);
-            return Ok(value);
+            return Ok(user);
         }
         return BadRequest();
     }
